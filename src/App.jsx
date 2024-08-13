@@ -8,28 +8,30 @@ import Fifth from "/lvl-5.svg";
 import Sixth from "/lvl-6.svg";
 import Seventh from "/lvl-7.svg";
 import Cart from "/cart.svg";
-import Connect from "/ton_symbol.svg";
+import { TonConnectButton } from "@tonconnect/ui-react";
 import Button from "./components/Button/Button";
+import Shop from "./components/Shop/Shop";
+
 
 function App() {
   const [count, setCount] = useState(0);
   const [level, setLevel] = useState(1);
-  const [cooldownTimer, setCooldownTimer] = useState(4500); 
-  const [boostTimer, setBoostTimer] = useState(0); 
+  const [cooldownTimer, setCooldownTimer] = useState(4500);
+  const [boostTimer, setBoostTimer] = useState(0);
   const [isGrowing, setIsGrowing] = useState(false);
   const [increment, setIncrement] = useState(0);
   const [clickPosition, setClickPosition] = useState({ x: 0, y: 0 });
   const [showIncrement, setShowIncrement] = useState(false);
   const [isBoostActive, setIsBoostActive] = useState(false);
   const [isBoostAvailable, setIsBoostAvailable] = useState(false);
+  const [isShopOpen, setIsShopOpen] = useState(false); // State to manage shop visibility
 
-  // Define SVG images for each level
   const levelImages = [First, Second, Third, Fourth, Fifth, Sixth, Seventh];
 
-  // Define thresholds for each level
+  // Thresholds for each level
   const levelThresholds = [1000, 5000, 15000, 30000, 50000, 75000, 100000];
 
-  // Define increments for each level
+  // Increments for each level
   const levelIncrements = [
     { min: 1, max: 2 },
     { min: 2, max: 4 },
@@ -77,21 +79,20 @@ function App() {
     }
   }, [boostTimer, isBoostActive]);
 
-  // Handle boost button click
   const handleBoostClick = () => {
     if (isBoostAvailable) {
       setIsBoostActive(true);
       setIsBoostAvailable(false);
-      setBoostTimer(60); // Boost duration is 60 seconds
+      setBoostTimer(60); 
     }
   };
 
   const handleClick = (e) => {
-    // Get the current increment range for the level
+    // Current increment range for the level
     const { min, max } = levelIncrements[level - 1];
     let incrementValue = Math.floor(Math.random() * (max - min + 1)) + min;
     if (isBoostActive) {
-      incrementValue *= 2; // Double the points if boost is active
+      incrementValue *= 2; // Boost is active
     }
     setCount((prevCount) => prevCount + incrementValue);
     setIncrement(incrementValue);
@@ -103,26 +104,28 @@ function App() {
       y: e.clientY - rect.top,
     });
 
-    // Show the increment
+    // Increment display
     setShowIncrement(true);
     setTimeout(() => setShowIncrement(false), 500);
 
-    // Trigger the grow animation
+    // Grow animation
     setIsGrowing(true);
     setTimeout(() => setIsGrowing(false), 100);
 
-    // Check if the level should increase
     if (count + incrementValue >= levelThresholds[level - 1] && level < 7) {
       setLevel((prevLevel) => prevLevel + 1);
     }
   };
 
-  // Convert timer seconds into an HH:MM:SS format
   const formatTimer = (time) => {
     const hours = String(Math.floor(time / 3600)).padStart(2, "0");
     const minutes = String(Math.floor((time % 3600) / 60)).padStart(2, "0");
     const seconds = String(time % 60).padStart(2, "0");
     return `${hours}:${minutes}:${seconds}`;
+  };
+
+  const toggleShop = () => {
+    setIsShopOpen(!isShopOpen);
   };
 
   return (
@@ -175,12 +178,14 @@ function App() {
       <div className="svg-button-container">
         <img
           src={Cart}
-          alt="Button 1"
+          alt="Cart"
           className="svg-button"
-          onClick={() => console.log("Soon")}
+          onClick={toggleShop} 
+          style={{width: "30px"}}
         />
-        <img src={Connect} alt="Button 2" className="svg-button" />
+        <TonConnectButton/>
       </div>
+      {isShopOpen && <Shop onClose={toggleShop} />}{" "}
     </div>
   );
 }
