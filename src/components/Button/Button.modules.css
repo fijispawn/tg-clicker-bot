@@ -1,0 +1,29 @@
+.custom-button {
+    padding: 10px 20px;
+    border:  solid black;
+    border-radius: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: opacity 0.3s ease, transform 0.2s ease, background-color 0.5s, color 0.5s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    height: 60px;
+    width: 300px
+  }
+  
+  .custom-button.active {
+    opacity: 1;
+    font-size: 20px;
+  }
+  
+  .custom-button.inactive {
+    cursor: not-allowed;
+    font-size: 16px;
+  }
+  
+  .button-text {
+    margin-left: 8px;
+  }
+  
