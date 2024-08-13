@@ -16,7 +16,7 @@ import Shop from "./components/Shop/Shop";
 function App() {
   const [count, setCount] = useState(0);
   const [level, setLevel] = useState(1);
-  const [cooldownTimer, setCooldownTimer] = useState(4500);
+  const [cooldownTimer, setCooldownTimer] = useState(10);
   const [boostTimer, setBoostTimer] = useState(0);
   const [isGrowing, setIsGrowing] = useState(false);
   const [increment, setIncrement] = useState(0);
