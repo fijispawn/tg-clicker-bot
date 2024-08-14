@@ -5,11 +5,8 @@ import Chips from "/chips.svg";
 import Hotdog from "/hotdog.svg";
 import Levelup from "/levelup.svg";
 import Product from "../Product/Product";
-import { useTonConnectUI } from "@tonconnect/ui-react";
 
-function Shop({ onClose }) {
-  const { connected } = useTonConnectUI(); 
-
+function Shop({ onClose, isConnected }) {
   const products = [
     { id: 1, name: "French Fries", price: 0.2, icon: Chips, description: "Automatically clicks for you." },
     { id: 2, name: "Hot Dog", price: 1, icon: Hotdog, description: "Increases your overall click efficiency." },
@@ -17,7 +14,11 @@ function Shop({ onClose }) {
   ];
 
   const handleBuy = (product) => {
-    alert(`You bought: ${product.name} for ${product.price} TON`);
+    if (isConnected) {
+      alert(`You bought: ${product.name} for ${product.price} TON`);
+    } else {
+      alert('Please connect your wallet first.');
+    }
   };
 
   return (
@@ -36,7 +37,7 @@ function Shop({ onClose }) {
               icon={product.icon} 
               description={product.description}
               onBuy={() => handleBuy(product)}
-              isConnected={connected} 
+              isConnected={isConnected} 
             />
           ))}
         </div>

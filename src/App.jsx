@@ -8,10 +8,9 @@ import Fifth from "/lvl-5.svg";
 import Sixth from "/lvl-6.svg";
 import Seventh from "/lvl-7.svg";
 import Cart from "/cart.svg";
-import { TonConnectButton } from "@tonconnect/ui-react";
+import { TonConnectButton, useTonConnectUI } from "@tonconnect/ui-react";
 import Button from "./components/Button/Button";
 import Shop from "./components/Shop/Shop";
-
 
 function App() {
   const [count, setCount] = useState(99900);
@@ -24,14 +23,25 @@ function App() {
   const [showIncrement, setShowIncrement] = useState(false);
   const [isBoostActive, setIsBoostActive] = useState(false);
   const [isBoostAvailable, setIsBoostAvailable] = useState(false);
-  const [isShopOpen, setIsShopOpen] = useState(false); // State to manage shop visibility
+  const [isShopOpen, setIsShopOpen] = useState(false);
+
+  const [isConnected, setIsConnected] = useState(false); // Track connection state
+
+  const tonConnectUI = useTonConnectUI(); // Access the TonConnect UI state
+
+  // Watch for connection state changes
+  useEffect(() => {
+    if (tonConnectUI.walletInfo) {
+      setIsConnected(true); // Wallet is connected
+    } else {
+      setIsConnected(false); // Wallet is not connected
+    }
+  }, [tonConnectUI.walletInfo]);
 
   const levelImages = [First, Second, Third, Fourth, Fifth, Sixth, Seventh];
 
-  // Thresholds for each level
   const levelThresholds = [1000, 5000, 15000, 30000, 50000, 75000, 100000];
 
-  // Increments for each level
   const levelIncrements = [
     { min: 1, max: 2 },
     { min: 2, max: 4 },
@@ -42,7 +52,6 @@ function App() {
     { min: 12, max: 15 },
   ];
 
-  // Cooldown timer
   useEffect(() => {
     if (!isBoostAvailable && cooldownTimer > 0) {
       const countdown = setInterval(() => {
@@ -60,7 +69,6 @@ function App() {
     }
   }, [cooldownTimer, isBoostAvailable]);
 
-  // Boost timer
   useEffect(() => {
     if (isBoostActive && boostTimer > 0) {
       const countdown = setInterval(() => {
@@ -83,32 +91,28 @@ function App() {
     if (isBoostAvailable) {
       setIsBoostActive(true);
       setIsBoostAvailable(false);
-      setBoostTimer(60); 
+      setBoostTimer(60);
     }
   };
 
   const handleClick = (e) => {
-    // Current increment range for the level
     const { min, max } = levelIncrements[level - 1];
     let incrementValue = Math.floor(Math.random() * (max - min + 1)) + min;
     if (isBoostActive) {
-      incrementValue *= 2; // Boost is active
+      incrementValue *= 2;
     }
     setCount((prevCount) => prevCount + incrementValue);
     setIncrement(incrementValue);
 
-    // Update click position
     const rect = e.target.getBoundingClientRect();
     setClickPosition({
       x: e.clientX - rect.left,
       y: e.clientY - rect.top,
     });
 
-    // Increment display
     setShowIncrement(true);
     setTimeout(() => setShowIncrement(false), 500);
 
-    // Grow animation
     setIsGrowing(true);
     setTimeout(() => setIsGrowing(false), 100);
 
@@ -130,6 +134,17 @@ function App() {
 
   return (
     <div className="app-container">
+      <div className="svg-button-container">
+        <img
+          src={Cart}
+          alt="Cart"
+          className="svg-button"
+          onClick={toggleShop}
+          style={{ width: "30px" }}
+        />
+        <TonConnectButton />
+      </div>
+
       <Button
         text={
           isBoostActive
@@ -155,9 +170,10 @@ function App() {
             : "transparent"
         }
         textColor={
-          isBoostActive ? "#EF4D4D" : isBoostAvailable ? "white" : "black"
+          isBoostActive ? "#0098EA" : isBoostAvailable ? "white" : "black"
         }
       />
+
       <h2 className="level-text">Lvl {level}</h2>
       <div className="svg-container" onClick={handleClick}>
         <img
@@ -175,17 +191,8 @@ function App() {
         )}
       </div>
       <p className="score-text">Score: {count}</p>
-      <div className="svg-button-container">
-        <img
-          src={Cart}
-          alt="Cart"
-          className="svg-button"
-          onClick={toggleShop} 
-          style={{width: "30px"}}
-        />
-        <TonConnectButton/>
-      </div>
-      {isShopOpen && <Shop onClose={toggleShop} />}{" "}
+
+      {isShopOpen && <Shop onClose={toggleShop} isConnected={isConnected} />}
     </div>
   );
 }

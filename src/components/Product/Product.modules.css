@@ -1,7 +1,7 @@
 .product-container {
-  border-bottom: solid;
+  border-bottom: solid 0.5px;
   text-align: center;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   display: flex;
   align-items: center;
   gap: 30px;

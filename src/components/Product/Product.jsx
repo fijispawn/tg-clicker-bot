@@ -14,9 +14,9 @@ function Product({ name, price, icon, onBuy, description, isConnected }) {
 
   const handleBuyClick = () => {
     if (isConnected) {
-      onBuy();
+      onBuy(); // Proceed with the purchase if the wallet is connected
     } else {
-      setIsConnectModalOpen(true);
+      setIsConnectModalOpen(true); // Show the connect modal if the wallet is not connected
     }
   };
 
