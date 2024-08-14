@@ -1,31 +1,21 @@
 import React, { useState } from "react";
 import "./Product.modules.css";
 import { IoMdInformationCircleOutline } from "react-icons/io";
-import ConnectModal from "../ConnectModal/ConnectModal";
 import ProductInfoModal from "./ProductInfoModal";
 
-function Product({ name, price, icon, onBuy, description, isConnected }) {
+function Product({ name, price, icon, onBuy, description }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
 
   const handleInfoClick = () => {
     setIsModalOpen(true);
   };
 
   const handleBuyClick = () => {
-    if (isConnected) {
-      onBuy(); // Proceed with the purchase if the wallet is connected
-    } else {
-      setIsConnectModalOpen(true); // Show the connect modal if the wallet is not connected
-    }
+    onBuy(); // Proceed with the purchase directly
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-  };
-
-  const closeConnectModal = () => {
-    setIsConnectModalOpen(false);
   };
 
   return (
@@ -52,10 +42,6 @@ function Product({ name, price, icon, onBuy, description, isConnected }) {
           description={description} 
           onClose={closeModal} 
         />
-      )}
-
-      {isConnectModalOpen && (
-        <ConnectModal onClose={closeConnectModal} />
       )}
     </div>
   );

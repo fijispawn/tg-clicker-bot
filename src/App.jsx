@@ -11,6 +11,8 @@ import Cart from "/cart.svg";
 import { TonConnectButton, useTonConnectUI } from "@tonconnect/ui-react";
 import Button from "./components/Button/Button";
 import Shop from "./components/Shop/Shop";
+import About from "/about.svg";
+import AboutModal from "./components/AboutModal/AboutModal";
 
 function App() {
   const [count, setCount] = useState(99900);
@@ -24,6 +26,8 @@ function App() {
   const [isBoostActive, setIsBoostActive] = useState(false);
   const [isBoostAvailable, setIsBoostAvailable] = useState(false);
   const [isShopOpen, setIsShopOpen] = useState(false);
+  const [isAboutOpen, setIsAboutOpen] = useState(false); // Добавляем состояние для модального окна About
+
 
   const [isConnected, setIsConnected] = useState(false); // Track connection state
 
@@ -132,6 +136,10 @@ function App() {
     setIsShopOpen(!isShopOpen);
   };
 
+  const toggleAbout = () => {
+    setIsAboutOpen(!isAboutOpen); // Переключение состояния модального окна About
+  };
+
   return (
     <div className="app-container">
       <div className="svg-button-container">
@@ -141,6 +149,13 @@ function App() {
           className="svg-button"
           onClick={toggleShop}
           style={{ width: "30px" }}
+        />
+        <img
+          src={About}
+          alt="About"
+          className="svg-button"
+          onClick={toggleAbout}
+          style={{ width: "36px" }}
         />
         <TonConnectButton />
       </div>
@@ -193,6 +208,7 @@ function App() {
       <p className="score-text">Score: {count}</p>
 
       {isShopOpen && <Shop onClose={toggleShop} isConnected={isConnected} />}
+      {isAboutOpen && <AboutModal onClose={toggleAbout} />}
     </div>
   );
 }
